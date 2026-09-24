@@ -8,7 +8,7 @@ dotenv.config();
 
 (async (): Promise<void> => {
   try {
-    const pathPDFInfo = "./src/assets/DENGUE.pdf";
+    const pathPDFInfo = "./assets/DENGUE.pdf";
 
     const client = new OpenAI({
       apiKey: "ollama",
