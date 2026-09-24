@@ -1,0 +1,4 @@
+memory.db
+package-lock.json
+node_modules
+*.pdf
