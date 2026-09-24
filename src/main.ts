@@ -43,7 +43,13 @@ export class ChatBotDengue {
 
       const sessionId = "1";
 
-      if (!qdrantURL || !qdrantApiKey || !client || !embeddingModel) {
+      if (
+        !qdrantURL ||
+        !qdrantApiKey ||
+        !client ||
+        !embeddingModel ||
+        !sessionId
+      ) {
         throw new Error("É obrigatório o uso dos parâmetros");
       }
 
@@ -73,10 +79,10 @@ export class ChatBotDengue {
         history: (
           data: InputParallelWithHistory,
         ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] => data.history,
-        response: (
+        response: async (
           data: InputParallelWithHistory,
         ): Promise<OpenAI.Chat.Completions.ChatCompletionMessage> =>
-          classificationRunnable.invoke(data),
+          await classificationRunnable.invoke(data),
       });
 
       const routingChain = new RunnableLambda({
@@ -90,23 +96,24 @@ export class ChatBotDengue {
           console.log(`>> Opção escolhida: ${option}`);
 
           switch (option) {
-            case MagicNumber.ONE:
+            case MagicNumber.ONE: {
               console.log(">> Informações sobre Dengue");
 
               return await questionsChain.execute(data.input, data.history);
-
-            case MagicNumber.TWO:
+            }
+            case MagicNumber.TWO: {
               console.log(">> Assuntos gerais e saudações");
 
               return await generalChain.execute(data.input, data.history);
-
-            case MagicNumber.THREE:
+            }
+            case MagicNumber.THREE: {
               console.log(">> Cadastro de ocorrência Dengue");
 
               return await occurrenceChain.execute(data.input, data.history);
-
-            default:
+            }
+            default: {
               throw new Error(`Opção não mapeada: ${option}`);
+            }
           }
         },
       });
